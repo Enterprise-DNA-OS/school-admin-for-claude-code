@@ -1,0 +1,3 @@
+ContactID,FamilyID,Given1,Surname,RelationshipDesc,DefaultEmail,MobilePhone,DebtorContactFlag
+SYN-C-901,SYN-20410,Jo,Hartley,Mother,j.hartley@example.com,0400 333 101,Y
+SYN-C-902,SYN-20411,Nikos,Papadopoulos,Father,n.papadopoulos@example.com,0400 333 102,Y

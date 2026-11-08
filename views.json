@@ -1,14 +1,29 @@
 [
   {
     "name": "week",
-    "title": "This week",
-    "subtitle": "School Admin for Claude Code: what needs attention, rendered by npm run view",
+    "title": "This week at school",
+    "subtitle": "School Admin for Claude Code: what needs a person this week",
     "sections": [
-      {
-        "title": "Needs attention",
-        "note": "TODO(author): point this at the industry's attention view (overdue, stuck, quiet).",
-        "sql": "select 'replace me' as item, 'TODO(author)' as why"
-      }
+      { "title": "Compliance", "note": "Checked against the rules in docs/compliance.md. Breaches first.", "sql": "select severity, rule, code, who, finding from compliance_checks order by array_position(array['breach','due','check']::text[], severity), rule, code" },
+      { "title": "Needs attention", "note": "Fees, attendance, enrolments, care and consent in one list.", "sql": "select area, code, who, issue from attention order by array_position(array['staff checks','care','attendance','consent','fees','enrolments']::text[], area), code" }
+    ]
+  },
+  {
+    "name": "debtors",
+    "title": "Debtors",
+    "subtitle": "Family balances, aged by the oldest unpaid term",
+    "sections": [
+      { "title": "Overdue accounts", "sql": "select code, name, balance_cents, overdue_1_30_cents, overdue_31_60_cents, overdue_61_90_cents, overdue_90_plus_cents, oldest_days_overdue, on_payment_plan, currency from debtors order by oldest_days_overdue desc" },
+      { "title": "Active payment plans", "sql": "select pp.code, f.name as family, pp.instalment_cents, pp.frequency, pp.starts_on, (select currency from setting_values) as currency from payment_plans pp join families f on f.id = pp.family_id where pp.status = 'active'" }
+    ]
+  },
+  {
+    "name": "enrolments",
+    "title": "Enrolments",
+    "subtitle": "Next year's places and the enquiries behind them",
+    "sections": [
+      { "title": "Places by year group", "sql": "select entry_year, year_level, places, confirmed, offers_out, in_pipeline, siblings_waiting, places_left from waitlist order by entry_year, year_level" },
+      { "title": "Enquiries needing a next step", "sql": "select code, child_name, entry_year, entry_level, stage, issue from enquiry_pipeline where issue is not null order by entry_year, entry_level" }
     ]
   }
 ]

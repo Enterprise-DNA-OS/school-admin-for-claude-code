@@ -1,24 +1,30 @@
 # Why there is no front end
 
-Synergetic is a database with a subscription. The tables underneath it are ordinary: a few entities, a few relationships, a handful of workflows you repeat every week. What you pay for is the layer on top that lets people who do not write SQL get at those tables. Screens, filters, dashboards, forms.
+A school administration system is a database with a subscription. Underneath are ordinary records: families, contacts, students, enquiries, fee terms, payments, attendance days, care alerts, staff checks, consents and gifts. What a school pays for is mostly the layer on top that lets the bursar, the registrar and the front office get at those records without writing a query.
 
-That layer used to be the whole product, because talking to a database was hard. It is not hard any more. Open this folder in Claude Code, describe what you want, and it writes the query, runs it, and explains the answer. Ask a question the dashboard never had a chart for and you still get an answer.
+That layer used to be the whole product, because talking to a database was hard. It is not hard any more. Open this folder in Claude Code, ask "which families are more than 60 days behind and not on a plan?", and it runs the query and explains the answer. Ask a question no report was ever built for and you still get an answer.
 
 ## What you gain
 
-- **Better answers.** A dashboard shows what the vendor decided to chart. Here you ask your own question, in your own words, and get it answered against your own data.
-- **No seats.** Everyone who needs to look can look. The bill does not grow with headcount.
-- **Your data in your Postgres.** Plain tables. Back them up, query them from anything, leave any time. There is no export step because there is nothing to leave.
-- **A process that matches you.** When your way of working changes, you add a command. You do not wait for a feature request to clear.
+- **Answers to your own questions.** The business manager asks about debtors, the registrar about next year's Year 7, the principal about child safety, each in plain words.
+- **No per-module licence.** Everyone who needs to look can look.
+- **Your records in a database you own.** Plain Postgres tables. Back them up, query them from anything, leave any time.
+- **Your rules.** Sibling discounts, the absence window, review periods and fee schedules are settings and tables you change by asking.
 
-## What you give up
+## What a screen gives that this does not
 
-- **A visual board.** Stages are a table you ask about, not cards you drag.
-- **A phone app.** It runs where Claude Code runs.
-- **A vendor help desk.** This is open source. Enterprise DNA supports the installed version for businesses that want someone to call.
+Be honest about it before you switch:
+
+- **Teachers marking rolls.** A teacher with thirty students wants a phone screen, not a chat. Roll marking here is a command or an import from your learning platform.
+- **A parent portal.** Families paying online, updating details and returning consent forms need a web page.
+- **Timetabling and academic reporting.** This base does not build timetables or semester reports.
+- **General ledger and payroll.** This base records fees and payments. It is not your accounting system or your payroll.
+- **A vendor help desk.** This is open source. Enterprise DNA supports the installed version for schools that want someone to call.
+
+Enterprise DNA builds the screens a school actually needs (a roll-marking page, a parent consent form, a bursar's board) on top of the same database, so the records stay yours.
 
 ## Who this fits
 
-Small teams who already use Claude Code, or who would rather learn to ask than learn another interface. If your team needs a screen to look at all day, keep Synergetic. If you need the answers more than the screens, this is cheaper, faster and yours.
+Independent schools whose admin team spends its week on families, fees, enrolments, attendance follow-up and compliance checks, and who want those answers faster than the current system gives them.
 
 Installed and run for you: https://enterprisedna.co/omni/instead-of/synergetic

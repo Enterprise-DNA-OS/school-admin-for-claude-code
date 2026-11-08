@@ -1,11 +1,53 @@
 [
   {
-    "name": "example",
-    "title": "TODO(author): the first document this industry must produce",
-    "for_each": "select gen_random_uuid() as id, 'Example' as name",
-    "file": "name",
+    "name": "fee-statement",
+    "title": "Fee statement",
+    "for_each": "select f.id, f.code || ' ' || f.name as label from families f join family_balances b on b.family_id = f.id where b.invoiced_cents > 0 order by f.code",
+    "file": "label",
     "sections": [
-      { "title": "Details", "sql": "select 'replace me' as item, $1::text as record_id" }
+      { "title": "Account", "layout": "record", "sql": "select f.name as family, f.code as account, f.billing_email as billing_email, b.balance_cents, b.oldest_days_overdue as oldest_days_overdue, b.currency from families f join family_balances b on b.family_id = f.id where f.id = $1" },
+      { "title": "Terms billed", "sql": "select code, period, issued_on, due_on, total_cents, outstanding_cents, (select currency from setting_values) as currency from invoice_outstanding where family_id = $1 order by due_on" },
+      { "title": "Charges", "note": "Tuition is shown as GST-free where the fee schedule marks it so.", "sql": "select i.period, l.description, l.amount_cents, case when l.gst_free then 'GST-free' else 'Includes GST' end as gst, (select currency from setting_values) as currency from invoice_lines l join invoices i on i.id = l.invoice_id where i.family_id = $1 and i.status = 'issued' order by i.due_on, l.amount_cents desc" },
+      { "title": "Payments received", "sql": "select received_on, amount_cents, method, reference, (select currency from setting_values) as currency from payments where family_id = $1 order by received_on" }
+    ]
+  },
+  {
+    "name": "absence-notice",
+    "title": "Absence explanation request",
+    "for_each": "select distinct s.id, s.code || ' ' || s.name as label from students s join unexplained_absences u on u.code = s.code order by label",
+    "file": "label",
+    "sections": [
+      { "title": "Student", "layout": "record", "sql": "select s.name as student, s.year_level, f.name as family, f.billing_email as family_email from students s join families f on f.id = s.family_id where s.id = $1" },
+      { "title": "Days without an explanation", "note": "Please tell the school office the reason for each day.", "sql": "select u.on_date, u.status, u.days_waiting from unexplained_absences u join students s on s.code = u.code where s.id = $1 order by u.on_date" }
+    ]
+  },
+  {
+    "name": "enrolment-offer",
+    "title": "Offer of a place",
+    "for_each": "select id, code || ' ' || child_name as label from enquiries where stage in ('offered', 'interview') order by code",
+    "file": "label",
+    "sections": [
+      { "title": "Offer", "layout": "record", "sql": "select child_name as student, parent_name as parent, entry_year, case when entry_level = 0 then 'Kindergarten' else 'Year ' || entry_level end as year_group, offer_expires_on as accept_by from enquiries where id = $1" },
+      { "title": "Tuition for this year group", "note": "Current schedule. Next year's fees are confirmed in the fee schedule.", "sql": "select fi.name, fi.amount_cents, fi.per, (select currency from setting_values) as currency from fee_items fi, enquiries e where e.id = $1 and fi.active and fi.category = 'tuition' and e.entry_level between fi.year_from and fi.year_to" }
+    ]
+  },
+  {
+    "name": "gift-receipt",
+    "title": "Gift receipt",
+    "for_each": "select id, code || ' ' || donor_name as label from gifts where receipt_number is not null order by code",
+    "file": "label",
+    "sections": [
+      { "title": "Receipt", "layout": "record", "sql": "select receipt_number, donor_name as received_from, appeal, amount_cents, received_on, case when tax_deductible then 'Recorded as a tax-deductible gift' else 'Not tax-deductible' end as status, (select currency from setting_values) as currency from gifts where id = $1" }
+    ]
+  },
+  {
+    "name": "care-plan-register",
+    "title": "Care plan register",
+    "for_each": "select id, year_level || '-' || code as label from students where status = 'enrolled' and exists (select 1 from care_alerts c where c.student_id = students.id and c.active) order by year_level, code",
+    "file": "label",
+    "sections": [
+      { "title": "Student", "layout": "record", "sql": "select name as student, year_level, house from students where id = $1" },
+      { "title": "Alerts and plans", "sql": "select kind, detail, action_plan_on, review_due from care_alerts where student_id = $1 and active order by kind" }
     ]
   }
 ]

@@ -1,0 +1,4 @@
+StudentID,FamilyID,Given1,Surname,BirthDate,StudentYearLevel,StudentHouse,StudentStatus,EntryDate
+SYN-30551,SYN-20410,Ruby,Hartley,04/03/2014,7,Cook,Current,30/01/2026
+SYN-30552,SYN-20410,Sam,Hartley,19/11/2017,K,Banks,Current,30/01/2026
+SYN-30553,SYN-20411,Eleni,Papadopoulos,22/07/2010,11,Flinders,Current,31/01/2023
